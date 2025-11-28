@@ -1,0 +1,168 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">✏️ Editar Cita</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('citas_controller.edit', id=cita.id) }}" id="formCita">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="paciente_id" class="form-label">Paciente *</label>
+                            <select class="form-select" id="paciente_id" name="paciente_id" required>
+                                <option value="">Seleccionar paciente...</option>
+                                {% for paciente in pacientes %}
+                                <option value="{{ paciente.id }}" 
+                                        {% if paciente.id == cita.paciente_id %}selected{% endif %}>
+                                    {{ paciente.nombre }} {{ paciente.apellidos }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="doctor_id" class="form-label">Doctor *</label>
+                            <select class="form-select" id="doctor_id" name="doctor_id" required onchange="cargarHorariosDisponibles()">
+                                <option value="">Seleccionar doctor...</option>
+                                {% for doctor in doctores %}
+                                <option value="{{ doctor.id }}" 
+                                        {% if doctor.id == cita.doctor_id %}selected{% endif %}>
+                                    {{ doctor.nombre_completo }} - {{ doctor.especialidad }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="fecha" class="form-label">Fecha *</label>
+                            <input type="date" class="form-control" id="fecha" name="fecha" 
+                                   value="{{ cita.fecha }}" min="{{ today }}" required onchange="cargarHorariosDisponibles()">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="hora" class="form-label">Hora *</label>
+                            <select class="form-select" id="hora" name="hora" required>
+                                <option value="">Cargando horarios...</option>
+                            </select>
+                            <small class="form-text text-muted" id="horariosInfo"></small>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="tipo_consulta" class="form-label">Tipo de Consulta</label>
+                            <select class="form-select" id="tipo_consulta" name="tipo_consulta">
+                                <option value="primera_vez" {% if cita.tipo_consulta == 'primera_vez' %}selected{% endif %}>Primera Vez</option>
+                                <option value="control" {% if cita.tipo_consulta == 'control' or not cita.tipo_consulta %}selected{% endif %}>Control</option>
+                                <option value="emergencia" {% if cita.tipo_consulta == 'emergencia' %}selected{% endif %}>Emergencia</option>
+                                <option value="seguimiento" {% if cita.tipo_consulta == 'seguimiento' %}selected{% endif %}>Seguimiento</option>
+                                <option value="otro" {% if cita.tipo_consulta == 'otro' %}selected{% endif %}>Otro</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="estado" class="form-label">Estado</label>
+                            <select class="form-select" id="estado" name="estado" disabled>
+                                <option value="pendiente" {% if cita.estado == 'pendiente' %}selected{% endif %}>⏳ Pendiente</option>
+                                <option value="confirmada" {% if cita.estado == 'confirmada' %}selected{% endif %}>✅ Confirmada</option>
+                                <option value="completada" {% if cita.estado == 'completada' %}selected{% endif %}>📋 Completada</option>
+                                <option value="cancelada" {% if cita.estado == 'cancelada' %}selected{% endif %}>❌ Cancelada</option>
+                            </select>
+                            <small class="form-text text-muted">Use los botones en la lista para cambiar el estado</small>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="motivo" class="form-label">Motivo de la Consulta *</label>
+                        <textarea class="form-control" id="motivo" name="motivo" rows="3" 
+                                  placeholder="Describa el motivo de la consulta..." required>{{ cita.motivo or '' }}</textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="notas" class="form-label">Notas Adicionales</label>
+                        <textarea class="form-control" id="notas" name="notas" rows="2" 
+                                  placeholder="Observaciones adicionales...">{{ cita.notas or '' }}</textarea>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('citas_controller.index') }}" class="btn btn-secondary me-md-2">
+                            ↩️ Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">💾 Actualizar Cita</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const today = new Date().toISOString().split('T')[0];
+const citaHora = "{{ cita.hora }}";
+
+// Cargar horarios disponibles al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    cargarHorariosDisponibles();
+});
+
+async function cargarHorariosDisponibles() {
+    const doctorId = document.getElementById('doctor_id').value;
+    const fecha = document.getElementById('fecha').value;
+    const horaSelect = document.getElementById('hora');
+    const horariosInfo = document.getElementById('horariosInfo');
+    
+    if (!doctorId || !fecha) {
+        horaSelect.innerHTML = '<option value="">Primero seleccione doctor y fecha</option>';
+        horariosInfo.textContent = '';
+        return;
+    }
+    
+    try {
+        horaSelect.innerHTML = '<option value="">Cargando horarios...</option>';
+        
+        const response = await fetch(`/citas/api/horarios_disponibles/${doctorId}/${fecha}`);
+        const data = await response.json();
+        
+        if (data.disponibles && data.disponibles.length > 0) {
+            horaSelect.innerHTML = '<option value="">Seleccionar hora...</option>';
+            data.disponibles.forEach(hora => {
+                const selected = hora === citaHora ? 'selected' : '';
+                horaSelect.innerHTML += `<option value="${hora}" ${selected}>${hora}</option>`;
+            });
+            
+            // Si la hora actual no está en disponibles, agregarla
+            if (citaHora && !data.disponibles.includes(citaHora)) {
+                horaSelect.innerHTML += `<option value="${citaHora}" selected>${citaHora} (Actual)</option>`;
+            }
+            
+            horariosInfo.textContent = `${data.disponibles.length} horarios disponibles`;
+            horariosInfo.className = 'form-text text-success';
+        } else {
+            // Si no hay horarios disponibles, mantener la hora actual
+            if (citaHora) {
+                horaSelect.innerHTML = `<option value="${citaHora}" selected>${citaHora} (Actual - Único disponible)</option>`;
+                horariosInfo.textContent = 'Solo disponible el horario actual de la cita';
+                horariosInfo.className = 'form-text text-warning';
+            } else {
+                horaSelect.innerHTML = '<option value="">No hay horarios disponibles</option>';
+                horariosInfo.textContent = 'No hay horarios disponibles para esta fecha';
+                horariosInfo.className = 'form-text text-danger';
+            }
+        }
+        
+    } catch (error) {
+        console.error('Error:', error);
+        // En caso de error, mantener la hora actual
+        if (citaHora) {
+            horaSelect.innerHTML = `<option value="${citaHora}" selected>${citaHora}</option>`;
+            horariosInfo.textContent = 'Error al cargar horarios, usando hora actual';
+        } else {
+            horaSelect.innerHTML = '<option value="">Error al cargar horarios</option>';
+        }
+        horariosInfo.className = 'form-text text-danger';
+    }
+}
+</script>
+{% endblock %}

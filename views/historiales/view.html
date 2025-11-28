@@ -1,0 +1,125 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="card-title mb-0">👁️ Ver Historial Médico - #{{ historial.id }}</h4>
+            </div>
+            <div class="card-body">
+                <!-- Información Básica -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5>👤 Información del Paciente</h5>
+                        <p><strong>Paciente:</strong> {{ historial.paciente_nombre }}</p>
+                        <p><strong>Doctor:</strong> {{ historial.doctor_nombre }}</p>
+                        <p><strong>Fecha de Consulta:</strong> {{ historial.fecha_consulta.strftime('%d/%m/%Y %H:%M') }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>📊 Signos Vitales</h5>
+                        <p><strong>Peso:</strong> {{ historial.peso or 'N/A' }} kg</p>
+                        <p><strong>Altura:</strong> {{ historial.altura or 'N/A' }} cm</p>
+                        <p><strong>IMC:</strong> 
+                            {% if historial.imc %}
+                                {{ historial.imc }} 
+                                <span class="badge 
+                                    {% if historial.imc < 18.5 %}bg-warning
+                                    {% elif historial.imc < 25 %}bg-success
+                                    {% elif historial.imc < 30 %}bg-warning
+                                    {% else %}bg-danger{% endif %}">
+                                    {% if historial.imc < 18.5 %}Bajo peso
+                                    {% elif historial.imc < 25 %}Normal
+                                    {% elif historial.imc < 30 %}Sobrepeso
+                                    {% else %}Obesidad{% endif %}
+                                </span>
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </p>
+                        <p><strong>Presión Arterial:</strong> {{ historial.presion_arterial or 'N/A' }}</p>
+                        <p><strong>Temperatura:</strong> {{ historial.temperatura or 'N/A' }} °C</p>
+                    </div>
+                </div>
+
+                <!-- Información Clínica -->
+                <div class="row">
+                    <div class="col-12">
+                        <h5>🩺 Información Clínica</h5>
+                        
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Síntomas:</strong></label>
+                            <div class="border p-3 bg-light rounded">
+                                {{ historial.sintomas|replace('\n', '<br>')|safe }}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Diagnóstico:</strong></label>
+                            <div class="border p-3 bg-light rounded">
+                                {{ historial.diagnostico|replace('\n', '<br>')|safe }}
+                            </div>
+                        </div>
+
+                        {% if historial.tratamiento %}
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Tratamiento:</strong></label>
+                            <div class="border p-3 bg-light rounded">
+                                {{ historial.tratamiento|replace('\n', '<br>')|safe }}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if historial.medicamentos_recetados %}
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Medicamentos Recetados:</strong></label>
+                            <div class="border p-3 bg-light rounded">
+                                {{ historial.medicamentos_recetados|replace('\n', '<br>')|safe }}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if historial.observaciones %}
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Observaciones:</strong></label>
+                            <div class="border p-3 bg-light rounded">
+                                {{ historial.observaciones|replace('\n', '<br>')|safe }}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if historial.proxima_cita %}
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Próxima Cita:</strong></label>
+                            <div class="border p-3 bg-info text-white rounded">
+                                📅 {{ historial.proxima_cita }}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <small class="text-muted">
+                        <strong>Creado:</strong> {{ historial.created_at.strftime('%d/%m/%Y %H:%M') }}
+                    </small>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="d-flex justify-content-between">
+                    <a href="{{ url_for('historiales_controller.index') }}" class="btn btn-secondary">
+                        ↩️ Volver a la lista
+                    </a>
+                    <div>
+                        <a href="{{ url_for('historiales_controller.edit', id=historial.id) }}" 
+                           class="btn btn-warning">✏️ Editar</a>
+                        <a href="{{ url_for('historiales_controller.delete', id=historial.id) }}" 
+                           class="btn btn-danger" 
+                           onclick="return confirm('¿Eliminar este historial médico?')">🗑️ Eliminar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

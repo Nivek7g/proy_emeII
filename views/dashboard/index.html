@@ -1,0 +1,86 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2>🏥 - Consultorio Médico</h2>
+        <p class="lead">Bienvenido, {{ session.usuario }}!</p>
+    </div>
+</div>
+
+<!-- En la sección de estadísticas -->
+<div class="row mt-4">
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Pacientes</h5>
+                <p class="card-text display-6">{{ pacientes_count }}</p>
+                <a href="{{ url_for('pacientes_controller.index') }}" class="text-white">Ver más →</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Doctores</h5>
+                <p class="card-text display-6">{{ doctores_count }}</p>
+                <a href="{{ url_for('doctores_controller.index') }}" class="text-white">Ver más →</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h5 class="card-title">Citas Hoy</h5>
+                <p class="card-text display-6">{{ citas_hoy }}</p>
+                <a href="{{ url_for('citas_controller.index') }}" class="text-white">Ver más →</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5 class="card-title">Total Citas</h5>
+                <p class="card-text display-6">{{ citas_count }}</p>
+                <a href="{{ url_for('citas_controller.index') }}" class="text-white">Ver más →</a>
+            </div>
+        </div>
+    </div>
+</div>
+    
+    <div class="col-md-3 mb-3">
+    <div class="card text-white bg-secondary">
+        <div class="card-body">
+            <h5 class="card-title">Historiales</h5>
+            <p class="card-text display-6">{{ historiales_count }}</p>
+            <a href="{{ url_for('historiales_controller.index') }}" class="text-white">Ver más →</a>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Acciones Rápidas</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2 d-md-flex">
+                    <a href="{{ url_for('pacientes_controller.add') }}" class="btn btn-primary me-md-2">
+                        ➕ Agregar Paciente
+                    </a>
+                    <a href="{{ url_for('citas_controller.add') }}" class="btn btn-success me-md-2">
+                        📅 Agendar Cita
+                    </a>
+                    <a href="{{ url_for('historiales_controller.add') }}" class="btn btn-info">
+                        📋 Crear Historial
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

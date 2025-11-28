@@ -1,0 +1,89 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">✏️ Editar Doctor</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('doctores_controller.edit', id=doctor.id) }}">
+                    <h5 class="mb-3">Información de Usuario</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="usuario" class="form-label">Usuario *</label>
+                            <input type="text" class="form-control" id="usuario" name="usuario" 
+                                   value="{{ user.usuario }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="correo" class="form-label">Correo *</label>
+                            <input type="email" class="form-control" id="correo" name="correo" 
+                                   value="{{ user.correo }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="celular" class="form-label">Celular *</label>
+                            <input type="text" class="form-control" id="celular" name="celular" 
+                                   value="{{ user.celular }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="contraseña" class="form-label">Nueva Contraseña</label>
+                            <input type="password" class="form-control" id="contraseña" name="contraseña" 
+                                   placeholder="Dejar vacío para mantener la actual">
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    <h5 class="mb-3">Información Médica</h5>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="especialidad" class="form-label">Especialidad *</label>
+                            <select class="form-select" id="especialidad" name="especialidad" required>
+                                <option value="Medicina General" {% if doctor.especialidad == 'Medicina General' %}selected{% endif %}>Medicina General</option>
+                                <option value="Pediatría" {% if doctor.especialidad == 'Pediatría' %}selected{% endif %}>Pediatría</option>
+                                <option value="Ginecología" {% if doctor.especialidad == 'Ginecología' %}selected{% endif %}>Ginecología</option>
+                                <option value="Cardiología" {% if doctor.especialidad == 'Cardiología' %}selected{% endif %}>Cardiología</option>
+                                <option value="Dermatología" {% if doctor.especialidad == 'Dermatología' %}selected{% endif %}>Dermatología</option>
+                                <option value="Ortopedia" {% if doctor.especialidad == 'Ortopedia' %}selected{% endif %}>Ortopedia</option>
+                                <option value="Oftalmología" {% if doctor.especialidad == 'Oftalmología' %}selected{% endif %}>Oftalmología</option>
+                                <option value="Psiquiatría" {% if doctor.especialidad == 'Psiquiatría' %}selected{% endif %}>Psiquiatría</option>
+                                <option value="Odontología" {% if doctor.especialidad == 'Odontología' %}selected{% endif %}>Odontología</option>
+                                <option value="Otra" {% if doctor.especialidad == 'Otra' %}selected{% endif %}>Otra</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="licencia" class="form-label">Número de Licencia *</label>
+                            <input type="text" class="form-control" id="licencia" name="licencia" 
+                                   value="{{ doctor.licencia }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="experiencia" class="form-label">Experiencia</label>
+                            <input type="text" class="form-control" id="experiencia" name="experiencia" 
+                                   value="{{ doctor.experiencia or '' }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="horario" class="form-label">Horario de Atención</label>
+                            <input type="text" class="form-control" id="horario" name="horario" 
+                                   value="{{ doctor.horario or '' }}">
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('doctores_controller.index') }}" class="btn btn-secondary me-md-2">
+                            ↩️ Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">💾 Actualizar Doctor</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

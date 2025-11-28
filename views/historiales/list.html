@@ -1,0 +1,64 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>📋 Historiales Médicos</h2>
+    <a href="{{ url_for('historiales_controller.add') }}" class="btn btn-primary">
+        ➕ Nuevo Historial
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if historiales %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Paciente</th>
+                        <th>Doctor</th>
+                        <th>Fecha Consulta</th>
+                        <th>Diagnóstico</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for historial in historiales %}
+                    <tr>
+                        <td>{{ historial.id }}</td>
+                        <td><strong>{{ historial.paciente_nombre }}</strong></td>
+                        <td>{{ historial.doctor_nombre }}</td>
+                        <td>{{ historial.fecha_consulta.strftime('%d/%m/%Y %H:%M') }}</td>
+                        <td>
+                            <span class="badge bg-info" title="{{ historial.diagnostico }}">
+                                {{ historial.diagnostico[:50] }}{% if historial.diagnostico|length > 50 %}...{% endif %}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="{{ url_for('historiales_controller.view', id=historial.id) }}" 
+                                   class="btn btn-info">👁️ Ver</a>
+                                <a href="{{ url_for('historiales_controller.edit', id=historial.id) }}" 
+                                   class="btn btn-warning">✏️ Editar</a>
+                                <a href="{{ url_for('historiales_controller.delete', id=historial.id) }}" 
+                                   class="btn btn-danger" 
+                                   onclick="return confirm('¿Eliminar este historial médico?')">🗑️ Eliminar</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-4">
+            <p class="text-muted">No hay historiales médicos registrados.</p>
+            <a href="{{ url_for('historiales_controller.add') }}" class="btn btn-primary">
+                ➕ Crear Primer Historial
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
