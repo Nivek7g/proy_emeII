@@ -33,8 +33,8 @@
                     <tr>
                         <td>{{ doctor.id }}</td>
                         <td><strong>{{ doctor.nombre_completo }}</strong></td>
-                        <td>{{ doctor.especialidad }}</td>
-                        <td>{{ doctor.especialidad_nombre }}</td>  </td>
+                        <td>{{ doctor.especialidad_nombre }}</td>
+                        <td>{{ doctor.licencia }}</td>  </td>
                         <td>{{ doctor.experiencia or 'N/A' }}</td>
                         <td>{{ doctor.horario or 'N/A' }}</td>
                         {% if session.user_rol == 'admin' %}
