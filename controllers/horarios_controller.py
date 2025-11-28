@@ -3,6 +3,7 @@ from models import db
 from models.horario_doctor import HorarioDoctor
 from models.doctor import Doctor
 from utils.helpers import login_required
+from datetime import datetime
 
 bp = Blueprint('horarios_controller', __name__)
 
@@ -17,11 +18,15 @@ def index():
 def add():
     if request.method == 'POST':
         try:
+            hora_inicio = datetime.strptime(request.form['hora_inicio'], "%H:%M").time()
+            hora_fin = datetime.strptime(request.form['hora_fin'], "%H:%M").time()
+
             horario = HorarioDoctor(
                 doctor_id=request.form['doctor_id'],
                 dia_semana=int(request.form['dia_semana']),
-                hora_inicio=request.form['hora_inicio'],
-                hora_fin=request.form['hora_fin']
+                hora_inicio=hora_inicio,
+                hora_fin=hora_fin,
+                activo='activo' in request.form
             )
             db.session.add(horario)
             db.session.commit()
@@ -29,7 +34,7 @@ def add():
             return redirect(url_for('horarios_controller.index'))
         except Exception as e:
             db.session.rollback()
-            flash('Error al agregar horario.', 'error')
+            flash(f'Error al agregar horario: {e}', 'error')
     
     doctores = Doctor.query.filter_by(activo=True).all()
     return render_template('horarios/add.html', doctores=doctores)
@@ -43,8 +48,8 @@ def edit(id):
         try:
             horario.doctor_id = request.form['doctor_id']
             horario.dia_semana = int(request.form['dia_semana'])
-            horario.hora_inicio = request.form['hora_inicio']
-            horario.hora_fin = request.form['hora_fin']
+            horario.hora_inicio = datetime.strptime(request.form['hora_inicio'], "%H:%M").time()
+            horario.hora_fin = datetime.strptime(request.form['hora_fin'], "%H:%M").time()
             horario.activo = 'activo' in request.form
             
             db.session.commit()
@@ -52,7 +57,7 @@ def edit(id):
             return redirect(url_for('horarios_controller.index'))
         except Exception as e:
             db.session.rollback()
-            flash('Error al actualizar horario.', 'error')
+            flash(f'Error al actualizar horario: {e}', 'error')
     
     doctores = Doctor.query.filter_by(activo=True).all()
     return render_template('horarios/edit.html', horario=horario, doctores=doctores)
@@ -67,7 +72,7 @@ def delete(id):
         flash('Horario eliminado correctamente.', 'success')
     except Exception as e:
         db.session.rollback()
-        flash('Error al eliminar horario.', 'error')
+        flash(f'Error al eliminar horario: {e}', 'error')
     
     return redirect(url_for('horarios_controller.index'))
 

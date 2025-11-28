@@ -82,7 +82,7 @@
                                 <br><small class="text-danger">⚠️ Stock bajo</small>
                             {% endif %}
                         </td>
-                        <td>${{ "%.2f"|format(medicamento.precio) }}</td>
+                        <td>Bs.{{ "%.2f"|format(medicamento.precio) }}</td>
                         <td>
                             {% if medicamento.requiere_receta %}
                                 <span class="badge bg-warning">📋 Requerida</span>

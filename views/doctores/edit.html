@@ -41,15 +41,18 @@
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="especialidad_id" class="form-label">Especialidad *</label>  <!-- CAMBIADO -->
-                            <select class="form-select" id="especialidad_id" name="especialidad_id" required>  <!-- CAMBIADO -->
-                                <option value="">Seleccionar especialidad...</option>
-                                {% for especialidad in especialidades %}
-                                <option value="{{ especialidad.id }}" 
-                                        {% if especialidad.id == doctor.especialidad_id %}selected{% endif %}>
-                                    {{ especialidad.nombre }}
-                                </option>
-                                {% endfor %}
+                            <label for="especialidad" class="form-label">Especialidad *</label>
+                            <select class="form-select" id="especialidad" name="especialidad" required>
+                                <option value="Medicina General" {% if doctor.especialidad == 'Medicina General' %}selected{% endif %}>Medicina General</option>
+                                <option value="Pediatría" {% if doctor.especialidad == 'Pediatría' %}selected{% endif %}>Pediatría</option>
+                                <option value="Ginecología" {% if doctor.especialidad == 'Ginecología' %}selected{% endif %}>Ginecología</option>
+                                <option value="Cardiología" {% if doctor.especialidad == 'Cardiología' %}selected{% endif %}>Cardiología</option>
+                                <option value="Dermatología" {% if doctor.especialidad == 'Dermatología' %}selected{% endif %}>Dermatología</option>
+                                <option value="Ortopedia" {% if doctor.especialidad == 'Ortopedia' %}selected{% endif %}>Ortopedia</option>
+                                <option value="Oftalmología" {% if doctor.especialidad == 'Oftalmología' %}selected{% endif %}>Oftalmología</option>
+                                <option value="Psiquiatría" {% if doctor.especialidad == 'Psiquiatría' %}selected{% endif %}>Psiquiatría</option>
+                                <option value="Odontología" {% if doctor.especialidad == 'Odontología' %}selected{% endif %}>Odontología</option>
+                                <option value="Otra" {% if doctor.especialidad == 'Otra' %}selected{% endif %}>Otra</option>
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -66,19 +69,10 @@
                                    value="{{ doctor.experiencia or '' }}">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <div class="form-check mt-4">
-                                <input class="form-check-input" type="checkbox" id="activo" name="activo" 
-                                       {% if doctor.activo %}checked{% endif %}>
-                                <label class="form-check-label" for="activo">
-                                    ✅ Doctor activo
-                                </label>
-                            </div>
+                            <label for="horario" class="form-label">Horario de Atención</label>
+                            <input type="text" class="form-control" id="horario" name="horario" 
+                                   value="{{ doctor.horario or '' }}">
                         </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="biografia" class="form-label">Biografía</label>
-                        <textarea class="form-control" id="biografia" name="biografia" rows="3">{{ doctor.biografia or '' }}</textarea>
                     </div>
                     
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
