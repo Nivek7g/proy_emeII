@@ -4,28 +4,17 @@ from flask_login import LoginManager
 db = SQLAlchemy()
 login_manager = LoginManager()
 
-# Importar todos los modelos para que SQLAlchemy los reconozca
+# Importar todos los modelos
 from models.user import User
 from models.patient import Patient
 from models.doctor import Doctor
 from models.appointment import Appointment
 from models.medical_record import MedicalRecord
-from models.prescription import Prescription  # Opcional
-# models/__init__.py
-from .user import User
-from .patient import Patient
-from .doctor import Doctor
-from .appointment import Appointment
-from .medical_record import MedicalRecord
-from .prescription import Prescription
-# Agregar los nuevos modelos
-from .specialty import Especialidad
-from .schedule import HorarioDoctor
-from .medication import Medicamento
-from .payment import Pago
+from models.prescription import Prescription
 
-__all__ = [
-    'User', 'Patient', 'Doctor', 'Appointment', 
-    'MedicalRecord', 'Prescription', 'Especialidad',
-    'HorarioDoctor', 'Medicamento', 'Pago'
-]
+# Nuevos modelos
+from models.especialidad import Especialidad
+from models.horario_doctor import HorarioDoctor
+from models.medicamento import Medicamento
+from models.pago import Pago
+from models.consultorio import Consultorio

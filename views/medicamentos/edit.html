@@ -1,0 +1,109 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">✏️ Editar Medicamento - {{ medicamento.nombre }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('medicamentos_controller.edit', id=medicamento.id) }}">
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label for="nombre" class="form-label">Nombre del Medicamento *</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" 
+                                   value="{{ medicamento.nombre }}" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="forma_farmaceutica" class="form-label">Forma Farmacéutica</label>
+                            <select class="form-select" id="forma_farmaceutica" name="forma_farmaceutica">
+                                <option value="">Seleccionar...</option>
+                                <option value="Tableta" {% if medicamento.forma_farmaceutica == 'Tableta' %}selected{% endif %}>Tableta</option>
+                                <option value="Cápsula" {% if medicamento.forma_farmaceutica == 'Cápsula' %}selected{% endif %}>Cápsula</option>
+                                <option value="Jarabe" {% if medicamento.forma_farmaceutica == 'Jarabe' %}selected{% endif %}>Jarabe</option>
+                                <option value="Inyectable" {% if medicamento.forma_farmaceutica == 'Inyectable' %}selected{% endif %}>Inyectable</option>
+                                <option value="Crema" {% if medicamento.forma_farmaceutica == 'Crema' %}selected{% endif %}>Crema</option>
+                                <option value="Ungüento" {% if medicamento.forma_farmaceutica == 'Ungüento' %}selected{% endif %}>Ungüento</option>
+                                <option value="Suspensión" {% if medicamento.forma_farmaceutica == 'Suspensión' %}selected{% endif %}>Suspensión</option>
+                                <option value="Supositorio" {% if medicamento.forma_farmaceutica == 'Supositorio' %}selected{% endif %}>Supositorio</option>
+                                <option value="Otro" {% if medicamento.forma_farmaceutica == 'Otro' %}selected{% endif %}>Otro</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="principio_activo" class="form-label">Principio Activo</label>
+                            <input type="text" class="form-control" id="principio_activo" name="principio_activo" 
+                                   value="{{ medicamento.principio_activo or '' }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="concentracion" class="form-label">Concentración</label>
+                            <input type="text" class="form-control" id="concentracion" name="concentracion" 
+                                   value="{{ medicamento.concentracion or '' }}">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="laboratorio" class="form-label">Laboratorio</label>
+                            <input type="text" class="form-control" id="laboratorio" name="laboratorio" 
+                                   value="{{ medicamento.laboratorio or '' }}">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="precio" class="form-label">Precio ($) *</label>
+                            <input type="number" step="0.01" class="form-control" id="precio" name="precio" 
+                                   value="{{ "%.2f"|format(medicamento.precio) }}" min="0" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label for="stock" class="form-label">Stock Actual *</label>
+                            <input type="number" class="form-control" id="stock" name="stock" 
+                                   value="{{ medicamento.stock }}" min="0" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="stock_minimo" class="form-label">Stock Mínimo *</label>
+                            <input type="number" class="form-control" id="stock_minimo" name="stock_minimo" 
+                                   value="{{ medicamento.stock_minimo }}" min="1" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check mt-4">
+                                <input class="form-check-input" type="checkbox" id="requiere_receta" name="requiere_receta" 
+                                       {% if medicamento.requiere_receta %}checked{% endif %}>
+                                <label class="form-check-label" for="requiere_receta">
+                                    💊 Requiere receta médica
+                                </label>
+                            </div>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input" type="checkbox" id="activo" name="activo" 
+                                       {% if medicamento.activo %}checked{% endif %}>
+                                <label class="form-check-label" for="activo">
+                                    ✅ Medicamento activo
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert {% if medicamento.stock < medicamento.stock_minimo %}alert-warning{% else %}alert-info{% endif %}">
+                        {% if medicamento.stock < medicamento.stock_minimo %}
+                            ⚠️ <strong>Alerta:</strong> El stock actual está por debajo del mínimo recomendado.
+                        {% else %}
+                            💡 El stock se encuentra en niveles normales.
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('medicamentos_controller.index') }}" class="btn btn-secondary me-md-2">
+                            ↩️ Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">💾 Actualizar Medicamento</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

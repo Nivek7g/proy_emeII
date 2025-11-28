@@ -12,34 +12,39 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="nombre" class="form-label">Nombre *</label>
-                            <input type="text" class="form-control" id="nombre" name="nombre" required>
+                            <input type="text" class="form-control" id="nombre" name="nombre" 
+                                   placeholder="Ej: Juan" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="apellidos" class="form-label">Apellidos *</label>
-                            <input type="text" class="form-control" id="apellidos" name="apellidos" required>
+                            <input type="text" class="form-control" id="apellidos" name="apellidos" 
+                                   placeholder="Ej: Pérez García" required>
                         </div>
                     </div>
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento *</label>
-                            <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" required>
+                            <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" 
+                                   max="{{ today }}" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="telefono" class="form-label">Teléfono</label>
-                            <input type="tel" class="form-control" id="telefono" name="telefono">
+                            <input type="tel" class="form-control" id="telefono" name="telefono" 
+                                   placeholder="Ej: 555-1234">
                         </div>
                     </div>
                     
                     <div class="mb-3">
                         <label for="direccion" class="form-label">Dirección</label>
-                        <textarea class="form-control" id="direccion" name="direccion" rows="2"></textarea>
+                        <textarea class="form-control" id="direccion" name="direccion" rows="2" 
+                                  placeholder="Dirección completa del paciente"></textarea>
                     </div>
                     
                     <div class="mb-3">
                         <label for="alergias" class="form-label">Alergias</label>
                         <textarea class="form-control" id="alergias" name="alergias" rows="2" 
-                                  placeholder="Lista de alergias conocidas..."></textarea>
+                                  placeholder="Lista de alergias conocidas (separar por comas)"></textarea>
                     </div>
                     
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -53,4 +58,12 @@
         </div>
     </div>
 </div>
+
+<script>
+// Establecer fecha máxima como hoy
+document.addEventListener('DOMContentLoaded', function() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('fecha_nacimiento').max = today;
+});
+</script>
 {% endblock %}

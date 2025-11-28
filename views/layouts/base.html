@@ -36,11 +36,30 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('historiales_controller.index') }}">Historiales</a>
                     </li>
-                    {% if session.user_rol == 'admin' %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('usuarios_controller.index') }}">Usuarios</a>
-                    </li>
-                    {% endif %}
+                    <!-- En la sección del navbar, después de Historiales -->
+                {% if session.user_rol == 'admin' %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        💊 Farmacia
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('medicamentos_controller.index') }}">Medicamentos</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('especialidades_controller.index') }}">Especialidades</a></li>
+                     </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        🏢 Administración
+                    </a>
+                    <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ url_for('consultorios_controller.index') }}">Consultorios</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('horarios_controller.index') }}">Horarios</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('pagos_controller.index') }}">Pagos</a></li>
+            </ul>
+            </li>
+            {% endif %}
                 </ul>
                 
                 <ul class="navbar-nav">

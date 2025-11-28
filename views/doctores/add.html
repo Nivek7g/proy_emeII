@@ -37,19 +37,12 @@
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="especialidad" class="form-label">Especialidad *</label>
-                            <select class="form-select" id="especialidad" name="especialidad" required>
+                            <label for="especialidad_id" class="form-label">Especialidad *</label>  <!-- CAMBIADO -->
+                            <select class="form-select" id="especialidad_id" name="especialidad_id" required>  <!-- CAMBIADO -->
                                 <option value="">Seleccionar especialidad...</option>
-                                <option value="Medicina General">Medicina General</option>
-                                <option value="Pediatría">Pediatría</option>
-                                <option value="Ginecología">Ginecología</option>
-                                <option value="Cardiología">Cardiología</option>
-                                <option value="Dermatología">Dermatología</option>
-                                <option value="Ortopedia">Ortopedia</option>
-                                <option value="Oftalmología">Oftalmología</option>
-                                <option value="Psiquiatría">Psiquiatría</option>
-                                <option value="Odontología">Odontología</option>
-                                <option value="Otra">Otra</option>
+                                {% for especialidad in especialidades %}
+                                <option value="{{ especialidad.id }}">{{ especialidad.nombre }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -64,11 +57,12 @@
                             <input type="text" class="form-control" id="experiencia" name="experiencia" 
                                    placeholder="Ej: 5 años, Especialista en...">
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="horario" class="form-label">Horario de Atención</label>
-                            <input type="text" class="form-control" id="horario" name="horario" 
-                                   placeholder="Ej: Lunes a Viernes 8:00-17:00">
-                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="biografia" class="form-label">Biografía</label>
+                        <textarea class="form-control" id="biografia" name="biografia" rows="3" 
+                                  placeholder="Información profesional, estudios, etc."></textarea>
                     </div>
                     
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">

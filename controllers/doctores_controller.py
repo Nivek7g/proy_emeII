@@ -1,7 +1,8 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from models import db
 from models.doctor import Doctor
 from models.user import User
+from models.especialidad import Especialidad
 from utils.helpers import login_required, admin_required
 
 bp = Blueprint('doctores_controller', __name__)
@@ -27,7 +28,7 @@ def add():
             # Verificar si el usuario ya existe
             if User.query.filter_by(usuario=usuario).first():
                 flash('El usuario ya existe.', 'error')
-                return render_template('doctores/add.html')
+                return render_template('doctores/add.html', especialidades=Especialidad.query.all())
             
             user = User(
                 usuario=usuario,
@@ -39,13 +40,14 @@ def add():
             db.session.add(user)
             db.session.flush()  # Para obtener el ID sin commit
             
-            # Crear el doctor
+            # Crear el doctor - CORREGIDO: usar especialidad_id en lugar de especialidad
             doctor = Doctor(
                 usuario_id=user.id,
-                especialidad=request.form['especialidad'],
+                especialidad_id=request.form['especialidad_id'],  # ← CAMBIADO
                 licencia=request.form['licencia'],
-                horario=request.form['horario'],
-                experiencia=request.form['experiencia']
+                experiencia=request.form['experiencia'],
+                biografia=request.form.get('biografia', ''),
+                activo=True
             )
             db.session.add(doctor)
             db.session.commit()
@@ -57,7 +59,7 @@ def add():
             db.session.rollback()
             flash(f'Error al agregar doctor: {str(e)}', 'error')
     
-    return render_template('doctores/add.html')
+    return render_template('doctores/add.html', especialidades=Especialidad.query.all())
 
 @bp.route('/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -73,11 +75,12 @@ def edit(id):
             user.correo = request.form['correo']
             user.celular = request.form['celular']
             
-            # Actualizar doctor
-            doctor.especialidad = request.form['especialidad']
+            # Actualizar doctor - CORREGIDO
+            doctor.especialidad_id = request.form['especialidad_id']  # ← CAMBIADO
             doctor.licencia = request.form['licencia']
-            doctor.horario = request.form['horario']
             doctor.experiencia = request.form['experiencia']
+            doctor.biografia = request.form.get('biografia', '')
+            doctor.activo = 'activo' in request.form
             
             # Si se proporciona nueva contraseña
             if request.form['contraseña']:
@@ -89,9 +92,10 @@ def edit(id):
             
         except Exception as e:
             db.session.rollback()
-            flash('Error al actualizar doctor.', 'error')
+            flash(f'Error al actualizar doctor: {str(e)}', 'error')
     
-    return render_template('doctores/edit.html', doctor=doctor, user=user)
+    especialidades = Especialidad.query.all()
+    return render_template('doctores/edit.html', doctor=doctor, user=user, especialidades=especialidades)
 
 @bp.route('/delete/<int:id>')
 @login_required
@@ -108,6 +112,6 @@ def delete(id):
         flash('Doctor eliminado correctamente.', 'success')
     except Exception as e:
         db.session.rollback()
-        flash('Error al eliminar doctor.', 'error')
+        flash(f'Error al eliminar doctor: {str(e)}', 'error')
     
     return redirect(url_for('doctores_controller.index'))
