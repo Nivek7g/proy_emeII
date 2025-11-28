@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session  # ← Agregar session aquí
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from models import db
 from models.medical_record import MedicalRecord
 from models.patient import Patient
@@ -13,7 +13,7 @@ bp = Blueprint('historiales_controller', __name__)
 @login_required
 def index():
     # Si es doctor, mostrar solo sus historiales
-    if session.get('user_rol') == 'doctor':  # ← Ahora session está definido
+    if session.get('user_rol') == 'doctor':
         from models.user import User
         user = User.query.filter_by(usuario=session['usuario']).first()
         if user and user.doctor:
@@ -27,6 +27,12 @@ def index():
     
     return render_template('historiales/list.html', historiales=historiales)
 
+@bp.route('/view/<int:id>')  # ← AGREGAR ESTA RUTA
+@login_required
+def view(id):
+    historial = MedicalRecord.query.get_or_404(id)
+    return render_template('historiales/view.html', historial=historial)
+
 @bp.route('/add', methods=['GET', 'POST'])
 @login_required
 def add():
@@ -35,6 +41,11 @@ def add():
             # Convertir fecha y hora
             fecha_consulta_str = f"{request.form['fecha_consulta']} {request.form['hora_consulta']}"
             fecha_consulta = datetime.strptime(fecha_consulta_str, '%Y-%m-%d %H:%M')
+            
+            # Convertir proxima_cita a date si existe
+            proxima_cita = None
+            if request.form['proxima_cita']:
+                proxima_cita = datetime.strptime(request.form['proxima_cita'], '%Y-%m-%d').date()
             
             historial = MedicalRecord(
                 paciente_id=request.form['paciente_id'],
@@ -50,7 +61,7 @@ def add():
                 tratamiento=request.form['tratamiento'],
                 medicamentos_recetados=request.form['medicamentos_recetados'],
                 observaciones=request.form['observaciones'],
-                proxima_cita=request.form['proxima_cita'] if request.form['proxima_cita'] else None
+                proxima_cita=proxima_cita
             )
             
             db.session.add(historial)
@@ -62,16 +73,15 @@ def add():
             db.session.rollback()
             flash(f'Error al crear historial médico: {str(e)}', 'error')
     
+    now = datetime.now()
+    today = now.date()
+    
     return render_template('historiales/add.html', 
                          pacientes=Patient.query.all(),
                          doctores=Doctor.query.all(),
-                         citas=Appointment.query.filter_by(estado='completada').all())
-
-@bp.route('/view/<int:id>')
-@login_required
-def view(id):
-    historial = MedicalRecord.query.get_or_404(id)
-    return render_template('historiales/view.html', historial=historial)
+                         citas=Appointment.query.filter_by(estado='completada').all(),
+                         now=now,
+                         today=today)
 
 @bp.route('/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -83,6 +93,11 @@ def edit(id):
             # Convertir fecha y hora
             fecha_consulta_str = f"{request.form['fecha_consulta']} {request.form['hora_consulta']}"
             fecha_consulta = datetime.strptime(fecha_consulta_str, '%Y-%m-%d %H:%M')
+            
+            # Convertir proxima_cita a date si existe
+            proxima_cita = None
+            if request.form['proxima_cita']:
+                proxima_cita = datetime.strptime(request.form['proxima_cita'], '%Y-%m-%d').date()
             
             historial.paciente_id = request.form['paciente_id']
             historial.doctor_id = request.form['doctor_id']
@@ -97,7 +112,7 @@ def edit(id):
             historial.tratamiento = request.form['tratamiento']
             historial.medicamentos_recetados = request.form['medicamentos_recetados']
             historial.observaciones = request.form['observaciones']
-            historial.proxima_cita = request.form['proxima_cita'] if request.form['proxima_cita'] else None
+            historial.proxima_cita = proxima_cita
             
             db.session.commit()
             flash('Historial médico actualizado correctamente.', 'success')

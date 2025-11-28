@@ -40,12 +40,13 @@ def add():
             db.session.add(user)
             db.session.flush()  # Para obtener el ID sin commit
             
-            # Crear el doctor - CORREGIDO: usar especialidad_id en lugar de especialidad
+            # Crear el doctor
             doctor = Doctor(
                 usuario_id=user.id,
-                especialidad_id=request.form['especialidad_id'],  # ← CAMBIADO
+                especialidad_id=request.form['especialidad_id'],
                 licencia=request.form['licencia'],
                 experiencia=request.form['experiencia'],
+                horario=request.form.get('horario', ''),  # ← AGREGADO
                 biografia=request.form.get('biografia', ''),
                 activo=True
             )
@@ -75,10 +76,11 @@ def edit(id):
             user.correo = request.form['correo']
             user.celular = request.form['celular']
             
-            # Actualizar doctor - CORREGIDO
-            doctor.especialidad_id = request.form['especialidad_id']  # ← CAMBIADO
+            # Actualizar doctor
+            doctor.especialidad_id = request.form['especialidad_id']
             doctor.licencia = request.form['licencia']
             doctor.experiencia = request.form['experiencia']
+            doctor.horario = request.form.get('horario', '')  # ← AGREGADO
             doctor.biografia = request.form.get('biografia', '')
             doctor.activo = 'activo' in request.form
             

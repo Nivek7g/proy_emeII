@@ -37,8 +37,8 @@
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="especialidad_id" class="form-label">Especialidad *</label>  <!-- CAMBIADO -->
-                            <select class="form-select" id="especialidad_id" name="especialidad_id" required>  <!-- CAMBIADO -->
+                            <label for="especialidad_id" class="form-label">Especialidad *</label>
+                            <select class="form-select" id="especialidad_id" name="especialidad_id" required>
                                 <option value="">Seleccionar especialidad...</option>
                                 {% for especialidad in especialidades %}
                                 <option value="{{ especialidad.id }}">{{ especialidad.nombre }}</option>
@@ -57,12 +57,24 @@
                             <input type="text" class="form-control" id="experiencia" name="experiencia" 
                                    placeholder="Ej: 5 años, Especialista en...">
                         </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="horario" class="form-label">Horario de Atención</label>  <!-- NUEVO CAMPO -->
+                            <input type="text" class="form-control" id="horario" name="horario" 
+                                   placeholder="Ej: Lunes a Viernes 8:00-17:00, Sábados 8:00-12:00">
+                        </div>
                     </div>
 
                     <div class="mb-3">
                         <label for="biografia" class="form-label">Biografía</label>
                         <textarea class="form-control" id="biografia" name="biografia" rows="3" 
                                   placeholder="Información profesional, estudios, etc."></textarea>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <small>
+                            💡 <strong>Nota:</strong> El horario general puede especificarse aquí. 
+                            Los horarios detallados por día se gestionan en el módulo de Horarios.
+                        </small>
                     </div>
                     
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">

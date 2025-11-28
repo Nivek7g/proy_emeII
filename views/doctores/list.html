@@ -21,8 +21,8 @@
                         <th>Doctor</th>
                         <th>Especialidad</th>
                         <th>Licencia</th>
-                        <th>Experiencia</th>
                         <th>Horario</th>
+                        <th>Estado</th>
                         {% if session.user_rol == 'admin' %}
                         <th>Acciones</th>
                         {% endif %}
@@ -34,16 +34,30 @@
                         <td>{{ doctor.id }}</td>
                         <td><strong>{{ doctor.nombre_completo }}</strong></td>
                         <td>{{ doctor.especialidad_nombre }}</td>
-                        <td>{{ doctor.licencia }}</td>  </td>
-                        <td>{{ doctor.experiencia or 'N/A' }}</td>
-                        <td>{{ doctor.horario or 'N/A' }}</td>
+                        <td>{{ doctor.licencia }}</td>
+                        <td>
+                            {% if doctor.horario %}
+                                <small class="text-muted">{{ doctor.horario }}</small>
+                            {% else %}
+                                <span class="text-muted">No especificado</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if doctor.activo %}
+                                <span class="badge bg-success">✅ Activo</span>
+                            {% else %}
+                                <span class="badge bg-secondary">❌ Inactivo</span>
+                            {% endif %}
+                        </td>
                         {% if session.user_rol == 'admin' %}
                         <td>
-                            <a href="{{ url_for('doctores_controller.edit', id=doctor.id) }}" 
-                               class="btn btn-sm btn-warning">✏️ Editar</a>
-                            <a href="{{ url_for('doctores_controller.delete', id=doctor.id) }}" 
-                               class="btn btn-sm btn-danger" 
-                               onclick="return confirm('¿Estás seguro de eliminar este doctor?')">🗑️ Eliminar</a>
+                            <div class="btn-group btn-group-sm">
+                                <a href="{{ url_for('doctores_controller.edit', id=doctor.id) }}" 
+                                   class="btn btn-warning">✏️ Editar</a>
+                                <a href="{{ url_for('doctores_controller.delete', id=doctor.id) }}" 
+                                   class="btn btn-danger" 
+                                   onclick="return confirm('¿Eliminar este doctor?')">🗑️ Eliminar</a>
+                            </div>
                         </td>
                         {% endif %}
                     </tr>
