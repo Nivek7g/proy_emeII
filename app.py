@@ -26,7 +26,16 @@ def create_app():
         from controllers.consultorios_controller import bp as consultorios_bp
         from controllers.pagos_controller import bp as pagos_bp
         from controllers.horarios_controller import bp as horarios_bp
+# En app.py, agregar estos imports y registros
+        
+        
+        
+        
 
+        app.register_blueprint(especialidades_bp, url_prefix='/especialidades')
+        app.register_blueprint(consultorios_bp, url_prefix='/consultorios')
+        
+        
         app.register_blueprint(auth_bp, url_prefix='/auth')
         app.register_blueprint(dashboard_bp)
         app.register_blueprint(pacientes_bp, url_prefix='/pacientes')
@@ -34,9 +43,9 @@ def create_app():
         app.register_blueprint(citas_bp, url_prefix='/citas')
         app.register_blueprint(historiales_bp, url_prefix='/historiales')
         app.register_blueprint(usuarios_bp, url_prefix='/usuarios')
-        app.register_blueprint(especialidades_bp, url_prefix='/especialidades')
+        
         app.register_blueprint(medicamentos_bp, url_prefix='/medicamentos')
-        app.register_blueprint(consultorios_bp, url_prefix='/consultorios')
+        
         app.register_blueprint(pagos_bp, url_prefix='/pagos')
         app.register_blueprint(horarios_bp, url_prefix='/horarios')
 

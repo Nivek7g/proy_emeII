@@ -1,0 +1,55 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">🏢 Agregar Nuevo Consultorio</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('consultorios_controller.add') }}">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="numero" class="form-label">Número de Consultorio *</label>
+                            <input type="text" class="form-control" id="numero" name="numero" 
+                                   placeholder="Ej: C-1, Consultorio A, etc." required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="piso" class="form-label">Piso</label>
+                            <input type="number" class="form-control" id="piso" name="piso" 
+                                   placeholder="Número de piso" min="1">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3" 
+                                  placeholder="Descripción del consultorio..."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="equipamiento" class="form-label">Equipamiento</label>
+                        <textarea class="form-control" id="equipamiento" name="equipamiento" rows="2" 
+                                  placeholder="Lista de equipos disponibles..."></textarea>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="activo" name="activo" checked>
+                        <label class="form-check-label" for="activo">
+                            ✅ Consultorio activo
+                        </label>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('consultorios_controller.index') }}" class="btn btn-secondary me-md-2">
+                            ↩️ Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">💾 Guardar Consultorio</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
